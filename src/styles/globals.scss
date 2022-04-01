@@ -1,3 +1,10 @@
+:root {
+  --background: #1a1d23;
+  --text-title: #f8f8f8;
+  --text-body: #d7d7d7;
+  --pink: #ff57b2;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,3 +12,35 @@
 }
 
 // TODO
+@media (max-width: 1080px) {
+  html {
+    font-size: 93.75%;
+  }
+}
+
+@media (max-width: 720px) {
+  html {
+    font-size: 97.5%;
+  }
+}
+
+body {
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+}
+
+// Personalização da barra de rolagem
+body::-webkit-scrollbar {
+  width: 0.75rem;
+}
+body::-webkit-scrollbar-tack {
+  background: #333;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #333;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+}
+
+button {
+  cursor: pointer;
+}
