@@ -2,6 +2,7 @@
   --background: #1a1d23;
   --text-title: #f8f8f8;
   --text-body: #d7d7d7;
+  --text-info: #bbb;
   --pink: #ff57b2;
 }
 
@@ -11,16 +12,21 @@
   padding: 0;
 }
 
-// TODO
-@media (max-width: 1080px) {
+@media (max-width: 1920px) {
   html {
-    font-size: 93.75%;
+    font-size: 87.5%;
+  }
+}
+
+@media (max-width: 1440px) {
+  html {
+    font-size: 62.5%;
   }
 }
 
 @media (max-width: 720px) {
   html {
-    font-size: 97.5%;
+    font-size: 68.75%;
   }
 }
 
@@ -43,4 +49,12 @@ body::-webkit-scrollbar-thumb {
 
 button {
   cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
 }
