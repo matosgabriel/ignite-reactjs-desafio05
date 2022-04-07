@@ -2,6 +2,9 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { FiCalendar, FiUser } from 'react-icons/fi';
+import Prismic from '@prismicio/client'; // prismic
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import Header from '../components/Header';
 
 import { getPrismicClient } from '../services/prismic';
@@ -28,7 +31,7 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home(): JSX.Element {
+export default function Home({ postsPagination }: HomeProps): JSX.Element {
   return (
     <>
       <Head>
@@ -38,65 +41,37 @@ export default function Home(): JSX.Element {
         <Header />
 
         <ul>
-          <li className={styles.post}>
-            <Link href="/">
-              <a>
-                <strong>Como utilizar Hooks</strong>
-              </a>
-            </Link>
-            <p>Pensando em sincronização ao invés de ciclos de vida.</p>
+          {postsPagination.results.map(post => {
+            return (
+              <li className={styles.post} key={post.uid}>
+                <Link href="/">
+                  <a>
+                    <strong>{post.data.title}</strong>
+                  </a>
+                </Link>
+                <p>{post.data.subtitle}</p>
 
-            <section>
-              <div>
-                <FiCalendar />
-                <span>15 Mar 2021</span>
-              </div>
-              <div>
-                <FiUser />
-                <span>Joseph Oliveira</span>
-              </div>
-            </section>
-          </li>
-
-          <li className={styles.post}>
-            <Link href="/">
-              <a>
-                <strong>Como utilizar Hooks</strong>
-              </a>
-            </Link>
-            <p>Pensando em sincronização ao invés de ciclos de vida.</p>
-
-            <section>
-              <div>
-                <FiCalendar />
-                <span>15 Mar 2021</span>
-              </div>
-              <div>
-                <FiUser />
-                <span>Joseph Oliveira</span>
-              </div>
-            </section>
-          </li>
-
-          <li className={styles.post}>
-            <Link href="/">
-              <a>
-                <strong>Como utilizar Hooks</strong>
-              </a>
-            </Link>
-            <p>Pensando em sincronização ao invés de ciclos de vida.</p>
-
-            <section>
-              <div>
-                <FiCalendar />
-                <span>15 Mar 2021</span>
-              </div>
-              <div>
-                <FiUser />
-                <span>Joseph Oliveira</span>
-              </div>
-            </section>
-          </li>
+                <section>
+                  <div>
+                    <FiCalendar />
+                    <span>
+                      {format(
+                        new Date(post.first_publication_date),
+                        'dd MMM yyyy',
+                        {
+                          locale: ptBR,
+                        }
+                      )}
+                    </span>
+                  </div>
+                  <div>
+                    <FiUser />
+                    <span>{post.data.author}</span>
+                  </div>
+                </section>
+              </li>
+            );
+          })}
         </ul>
 
         <button type="button">Carregar mais posts</button>
@@ -105,9 +80,22 @@ export default function Home(): JSX.Element {
   );
 }
 
-// export const getStaticProps: GetStaticProps = async () => {
-//   // const prismic = getPrismicClient();
-//   // const postsResponse = await prismic.query(TODO);
+export const getStaticProps: GetStaticProps = async () => {
+  const prismic = getPrismicClient();
+  const postsResponse = await prismic.query(
+    Prismic.Predicates.at('document.type', 'posts'),
+    {
+      fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
+    }
+  );
 
-//   // TODO
-// };
+  return {
+    props: {
+      postsPagination: {
+        next_page: postsResponse.next_page,
+        results: postsResponse.results,
+      },
+    },
+    revalidate: 60 * 60 * 24, // 24 hours
+  };
+};
