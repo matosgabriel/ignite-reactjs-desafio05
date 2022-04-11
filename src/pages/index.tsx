@@ -55,51 +55,49 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
       <Head>
         <title>Home</title>
       </Head>
-      <div className={styles.container}>
-        <main className={styles.content}>
-          <Header />
+      <main className={styles.container}>
+        <Header />
 
-          <ul>
-            {posts.map(post => {
-              return (
-                <li className={styles.post} key={post.uid}>
-                  <Link href="/">
-                    <a>
-                      <strong>{post.data.title}</strong>
-                    </a>
-                  </Link>
-                  <p>{post.data.subtitle}</p>
+        <ul>
+          {posts.map(post => {
+            return (
+              <li className={styles.post} key={post.uid}>
+                <Link href="/">
+                  <a>
+                    <strong>{post.data.title}</strong>
+                  </a>
+                </Link>
+                <p>{post.data.subtitle}</p>
 
-                  <section>
-                    <div>
-                      <FiCalendar />
-                      <span>
-                        {format(
-                          new Date(post.first_publication_date),
-                          'dd MMM yyyy',
-                          {
-                            locale: ptBR,
-                          }
-                        )}
-                      </span>
-                    </div>
-                    <div>
-                      <FiUser />
-                      <span>{post.data.author}</span>
-                    </div>
-                  </section>
-                </li>
-              );
-            })}
-          </ul>
+                <section>
+                  <div>
+                    <FiCalendar />
+                    <span>
+                      {format(
+                        new Date(post.first_publication_date),
+                        'dd MMM yyyy',
+                        {
+                          locale: ptBR,
+                        }
+                      )}
+                    </span>
+                  </div>
+                  <div>
+                    <FiUser />
+                    <span>{post.data.author}</span>
+                  </div>
+                </section>
+              </li>
+            );
+          })}
+        </ul>
 
-          {nextPage !== null && (
-            <button type="button" onClick={() => handleLoadMorePosts()}>
-              Carregar mais posts
-            </button>
-          )}
-        </main>
-      </div>
+        {nextPage !== null && (
+          <button type="button" onClick={() => handleLoadMorePosts()}>
+            Carregar mais posts
+          </button>
+        )}
+      </main>
     </>
   );
 }
