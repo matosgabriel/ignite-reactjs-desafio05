@@ -11,7 +11,7 @@ import Header from '../components/Header';
 
 import { getPrismicClient } from '../services/prismic';
 
-// import commonStyles from '../styles/common.module.scss';
+import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 
 interface Post {
@@ -55,21 +55,21 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
       <Head>
         <title>Home</title>
       </Head>
-      <main className={styles.container}>
+      <div className={commonStyles.container}>
         <Header />
 
         <ul>
           {posts.map(post => {
             return (
               <li className={styles.post} key={post.uid}>
-                <Link href="/">
+                <Link href={`/post/${post.uid}`}>
                   <a>
                     <strong>{post.data.title}</strong>
                   </a>
                 </Link>
                 <p>{post.data.subtitle}</p>
 
-                <section>
+                <section className={commonStyles.postInfo}>
                   <div>
                     <FiCalendar />
                     <span>
@@ -93,11 +93,15 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         </ul>
 
         {nextPage !== null && (
-          <button type="button" onClick={() => handleLoadMorePosts()}>
+          <button
+            type="button"
+            onClick={() => handleLoadMorePosts()}
+            className={styles.loadMoreButton}
+          >
             Carregar mais posts
           </button>
         )}
-      </main>
+      </div>
     </>
   );
 }

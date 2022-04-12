@@ -1,1 +1,28 @@
-// TODO
+.container {
+  justify-content: center;
+  max-width: 700px;
+  padding: 0 10px 80px;
+  margin: 0 auto;
+}
+
+.postInfo {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2.4rem;
+
+  div {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    color: var(--text-info);
+
+    span {
+      margin-left: 0.8rem;
+      font-family: 'Inter';
+    }
+  }
+
+  div + div {
+    margin-left: 2.4rem;
+  }
+}
