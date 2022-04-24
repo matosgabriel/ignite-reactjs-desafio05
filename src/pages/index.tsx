@@ -6,7 +6,6 @@ import Prismic from '@prismicio/client'; // prismic client
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useEffect, useState } from 'react';
-import { DefaultClient } from '@prismicio/client/types/client';
 import Header from '../components/Header';
 
 import { getPrismicClient } from '../services/prismic';
@@ -27,7 +26,6 @@ interface Post {
 interface PostPagination {
   next_page: string;
   results: Post[];
-  prismicClient: DefaultClient;
 }
 
 interface HomeProps {
@@ -107,14 +105,12 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const prismic = getPrismicClient();
-  const postsResponse = await prismic.query(
-    Prismic.Predicates.at('document.type', 'posts'),
-    {
-      fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
-      pageSize: 5,
-    }
-  );
+  const prismic = getPrismicClient({});
+
+  const postsResponse = await prismic.getByType('posts', {
+    fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
+    pageSize: 5,
+  });
 
   return {
     props: {

@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
+import PrismicDOM from 'prismic-dom';
 import Header from '../../components/Header';
 
 import { getPrismicClient } from '../../services/prismic';
@@ -33,10 +34,20 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps): JSX.Element {
+  const readTime = Math.round(
+    post.data.content.reduce((acumulator, currentValue) => {
+      const wordCount =
+        acumulator +
+        PrismicDOM.RichText.asText(currentValue.body).split(' ').length;
+
+      return wordCount;
+    }, 0) / 200
+  );
+
   return (
     <>
       <Head>
-        <title>teste</title>
+        <title>Post | {post.data.title}</title>
       </Head>
 
       <div className={commonStyles.container}>
@@ -62,27 +73,8 @@ export default function Post({ post }: PostProps): JSX.Element {
             </div>
             <div>
               <FiClock />
-              <span>4 min</span>
+              <span>{readTime} min</span>
             </div>
-          </section>
-
-          <section className={styles.postContent}>
-            <h2>Proin et varius</h2>
-
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-              dolor sapien, vulputate eu diam at, condimentum hendrerit tellus.
-            </p>
-
-            <p>
-              Nam facilisis sodales felis, pharetra pharetra lectus auctor sed.
-              Ut venenatis mauris vel libero pretium, et pretium ligula
-              faucibus.
-            </p>
-            <p>
-              Morbi nibh felis, elementum a posuere et, vulputate et erat. Nam
-              venenatis.
-            </p>
           </section>
 
           {post.data.content.map(content => {
@@ -102,26 +94,21 @@ export default function Post({ post }: PostProps): JSX.Element {
   );
 }
 
-interface staticreturn {
-  paths: any[];
-  fallback: string;
-}
-
-export const getStaticPaths = (): staticreturn => {
+export const getStaticPaths: GetStaticPaths = async () => {
   // const prismic = getPrismicClient();
-  // const posts = await prismic.query(TODO);
+  // const posts = await prismic.getByType(TODO);
 
   // TODO
   return {
-    paths: [],
-    fallback: 'blocking',
+    paths: [{ params: { slug: 'como-utilizar-hooks' } }],
+    fallback: true,
   };
 };
 
 export const getStaticProps: GetStaticProps = async context => {
   const { slug } = context.params;
 
-  const prismic = getPrismicClient();
+  const prismic = getPrismicClient({});
   const response = await prismic.getByUID('posts', String(slug), {});
 
   return {

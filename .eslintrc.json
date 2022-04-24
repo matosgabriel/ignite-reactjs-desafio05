@@ -81,7 +81,7 @@
       }
     ],
     "@typescript-eslint/camelcase": "off",
-    "linebreak-style": "off"
+    "linebreak-style": ["off", "windows"]
   },
   "settings": {
     "react": {
