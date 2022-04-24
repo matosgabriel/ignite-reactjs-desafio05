@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import PrismicDOM from 'prismic-dom';
+import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 
 import { getPrismicClient } from '../../services/prismic';
@@ -34,6 +35,8 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps): JSX.Element {
+  const { isFallback } = useRouter();
+
   const readTime = Math.round(
     post.data.content.reduce((acumulator, currentValue) => {
       const wordCount =
@@ -41,8 +44,14 @@ export default function Post({ post }: PostProps): JSX.Element {
         PrismicDOM.RichText.asText(currentValue.body).split(' ').length;
 
       return wordCount;
-    }, 0) / 200
+    }, 0) /
+      200 +
+      0.5
   );
+
+  if (isFallback) {
+    return <p>Carregando...</p>;
+  }
 
   return (
     <>
@@ -73,7 +82,7 @@ export default function Post({ post }: PostProps): JSX.Element {
             </div>
             <div>
               <FiClock />
-              <span>{readTime} min</span>
+              <span>{`${readTime} min`}</span>
             </div>
           </section>
 
@@ -95,12 +104,15 @@ export default function Post({ post }: PostProps): JSX.Element {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const prismic = getPrismicClient();
-  // const posts = await prismic.getByType(TODO);
+  const prismic = getPrismicClient({});
+  const posts = await prismic.getByType('posts', {});
 
-  // TODO
+  const postsPaths = posts.results.map(result => ({
+    params: { slug: result.uid },
+  }));
+
   return {
-    paths: [{ params: { slug: 'como-utilizar-hooks' } }],
+    paths: postsPaths,
     fallback: true,
   };
 };
